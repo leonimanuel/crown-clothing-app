@@ -5,7 +5,7 @@ import { Switch, Route } from "react-router-dom";
 import './App.css';
 import HomePage from "./pages/homepage/homepage.component"
 import ShopPage from "./pages/shop/shop.component"
-
+import Header from "./components/header/header.component"; 
 // const HatsPage = () => (
 // 	<div>
 // 		<h1>Hats Page</h1>
@@ -15,6 +15,7 @@ import ShopPage from "./pages/shop/shop.component"
 function App() {
 	return (
 		<div>
+			<Header /> {/*by being outside the switch, header is always displayed, despite route*/}
 			<Switch> {/*The moment switch sees something match the path (as long as a route gets rendered) it renders only that. Useful if we don't want to accidentally render multiple components*/}
 				{/* when path is at the base url, open the homepage. "exact" means the path has to be exactly '/'*/}
 				<Route exact path='/' component={HomePage} />
