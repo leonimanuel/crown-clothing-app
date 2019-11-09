@@ -13,6 +13,38 @@ const config = {
   measurementId: "G-317W6EZM9Q"
 };
 
+//take user auth object and export to database
+export const createUserProfileDocument = async (userAuth, additionalData) => { //async?
+	//only save to database if we get valid user object	
+	if (!userAuth) return;//aka if userAuth = null, cancel
+	
+	//so this only applies if userAuth has an auth object
+	const userRef = firestore.doc(`users/${userAuth.uid}`); //from firebase authentication
+
+	//getting the snapShot
+	const snapShot = await userRef.get(); //using this snapshot, we'll figure out whether there's data here. Whether or not we've already stored the user we've authenticated. 
+
+	// console.log(snapShot)
+
+	if(!snapShot.exists) {
+		const { displayName, email } = userAuth;
+		const createdAt = new Date(); // ?? new JS object that tells us when this was invoked
+
+		try {
+			await userRef.set({ //set = create
+				displayName,
+				email,
+				createdAt,
+				...additionalData //??
+			})
+		} catch (error) {
+			console.log("error creating user", error.message);
+		}
+	}
+
+	return userRef; //might need it for something later
+}
+
 firebase.initializeApp(config);
 
 export const auth = firebase.auth();
@@ -23,3 +55,9 @@ provider.setCustomParameters({prompt: "select_account"}); //we want to always tr
 export const signInWithGoogle = () => auth.signInWithPopup(provider);
 
 export default firebase; // in case we want the whole library.
+
+
+
+
+
+
