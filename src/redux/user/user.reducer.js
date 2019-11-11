@@ -12,6 +12,8 @@
 // 	payload: 
 // }
 
+import { UserActionTypes } from "./user.types"
+
 //redux doesn't know about states when app initilializes, only when action fires. so we need to set an initial state
 const INITIAL_STATE = {
 	currentUser: null //instantiation
@@ -20,7 +22,8 @@ const INITIAL_STATE = {
 //									default parameter value (ES6 feature). Means that if state is ever UNDEFINED, it will fall back and use what you defined as a default. remember: null is considered a value.
 const userReducer = (state = INITIAL_STATE, action) => {//state is going to be current state that the redux store passes to this reducer whenever an action fires
 	switch (action.type) {
-		case "SET_CURRENT_USER":
+		// case "SET_CURRENT_USER":
+		case UserActionTypes.SET_CURRENT_USER: //this way, we know that its constant and we wont have accidental typos in action type strings
 			return {
 				...state, //spreading. Basically keep all this stuff except the following as it was..?
 				currentUser: action.payload

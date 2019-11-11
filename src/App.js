@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 import './App.css';
@@ -55,7 +55,7 @@ class App extends React.Component { //go with class component so you can store s
 		this.unsubscribeFromAuth(); //tells it to stop listening for changes.
 	}
 
-	render() {
+	render() { //JS invocation that determines what comp to return
 		return (
 			<div>
 				<Header /> {/*by being outside the switch, header is always displayed, despite route*/}
@@ -63,21 +63,22 @@ class App extends React.Component { //go with class component so you can store s
 					{/* when path is at the base url, open the homepage. "exact" means the path has to be exactly '/'*/}
 					<Route exact path='/' component={HomePage} />
 					<Route path='/shop' component={ShopPage} />
-					<Route path='/signin' component={SignInAndSignUpPage} />
+					<Route exact path='/signin' render={() => this.props.currentUser ? (<Redirect to="/" />) : (<SignInAndSignUpPage />)} />
 				</Switch>
 			</div>
 		);
 	}
-
-	
 }
 
 // export default App;
+const mapStateToProps = ({ user }) => ({ //in this context, user will be the user reducer
+	currentUser: user.currentUser
+})
 
 const mapDispatchToProps = dispatch => ({ //will return an object where prop name will be wtvr prop we wanna pass in that dispatches wtvr action we're trying to pass, which in this case is setCurrentUser
 	setCurrentUser: user => dispatch(setCurrentUser(user)) //dispatch says: wtvr object you're passing me is going to be an action object that I pass to every reducer. 
 }) //now we can get rid of the app consrtuctor and the state objects it contains.
 
-export default connect(null, mapDispatchToProps)(App);
-//our app comp doesn't actually NEED currentUser. for this reason, first argument
+export default connect(mapStateToProps, mapDispatchToProps)(App);
+//our app comp doesn't actually NEED currentUser (OUTDATED). for this reason, first argument
 // in connect func can be null, since we don't need mapStateToProps liek we do for the header
