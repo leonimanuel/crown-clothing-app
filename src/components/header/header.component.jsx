@@ -6,7 +6,10 @@ import {ReactComponent as Logo} from "../../assets/crown.svg";
 import { auth } from "../../firebase/firebase.utils";
 import CartIcon from "../cart-icon/cart-icon.component";
 import CartDropdown from "../cart-dropdown/cart-dropdown.component";
+import { createStructuredSelector } from "reselect";
 
+import { selectCartHidden } from "../../redux/cart/cart.selectors";
+import { selectCurrentUser } from "../../redux/user/user.selectors";
 
 const Header = ({currentUser, hidden}) => (
 	<div className='header'>
@@ -26,11 +29,11 @@ const Header = ({currentUser, hidden}) => (
 	</div>
 );
 											//syntax for destructuring nested values. e.g.: I want you to get the value currentUser off of the user value, which is being destructured off of the state
-const mapStateToProps = ({user: {currentUser}, cart: {hidden}}) => ({
+const mapStateToProps = createStructuredSelector ({ //makes writing several selectors at once easier. Kind of like destructuing
 			//^the name can be anything but this one is standard w redux codebases
 	// currentUser: state.user.currentUser //<--before nested destructuring
-	currentUser,
-	hidden
+	currentUser: selectCurrentUser,
+	hidden: selectCartHidden
 }) //now we can remove the passing of currentUser to our Header comp in App.js
 
 // export default Header;

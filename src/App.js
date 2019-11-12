@@ -7,9 +7,13 @@ import HomePage from "./pages/homepage/homepage.component"
 import ShopPage from "./pages/shop/shop.component"
 import Header from "./components/header/header.component"; 
 import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up.component"
-import {auth, createUserProfileDocument} from "./firebase/firebase.utils";
-import { setCurrentUser } from "./redux/user/user.actions";
+import CheckoutPage from "./pages/checkout/checkout.component"
 
+import {auth, createUserProfileDocument} from "./firebase/firebase.utils";
+
+import { createStructuredSelector } from "reselect";
+import { setCurrentUser } from "./redux/user/user.actions";
+import { selectCurrentUser } from "./redux/user/user.selectors";
 //we want to store the state of our user in our app. whichever way they log in, we want to
 //store that in app state so that we can pass it to components that need it. 
 
@@ -63,6 +67,7 @@ class App extends React.Component { //go with class component so you can store s
 					{/* when path is at the base url, open the homepage. "exact" means the path has to be exactly '/'*/}
 					<Route exact path='/' component={HomePage} />
 					<Route path='/shop' component={ShopPage} />
+					<Route exact path='/checkout' component={CheckoutPage} />
 					<Route exact path='/signin' render={() => this.props.currentUser ? (<Redirect to="/" />) : (<SignInAndSignUpPage />)} />
 				</Switch>
 			</div>
@@ -71,8 +76,8 @@ class App extends React.Component { //go with class component so you can store s
 }
 
 // export default App;
-const mapStateToProps = ({ user }) => ({ //in this context, user will be the user reducer
-	currentUser: user.currentUser
+const mapStateToProps = createStructuredSelector({ //in this context, user will be the user reducer
+	currentUser: selectCurrentUser
 })
 
 const mapDispatchToProps = dispatch => ({ //will return an object where prop name will be wtvr prop we wanna pass in that dispatches wtvr action we're trying to pass, which in this case is setCurrentUser
