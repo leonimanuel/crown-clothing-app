@@ -1,5 +1,5 @@
 import CartActionTypes from "./cart.types"
-import { addItemtoCart} from "./cart.utils"
+import { addItemToCart, removeItemFromCart } from "./cart.utils"
 
 const INITIAL_STATE = {
 	hidden: true,
@@ -13,16 +13,29 @@ const cartReducer = (state = INITIAL_STATE, action) => {
 				...state,
 				hidden: !state.hidden
 			};
+		
 		case CartActionTypes.ADD_ITEM:
 			return {
 				...state, //spreading 
-				cartItems: addItemtoCart(state.cartItems, action.payload)            
+				cartItems: addItemToCart(state.cartItems, action.payload)            
 																						//any additional items
 				// cartItems: [...state.cartItems, action.payload]
 											//^spreading in
 											//existing cart items
+			};
+		
+		case CartActionTypes.CLEAR_ITEM_FROM_CART:
+			return {
+				...state,
+				cartItems: state.cartItems.filter(cartItem =>  //filter returns us back anything that yields true
+					cartItem.id !== action.payload.id ) //if cartItem.id doesn't match anything we're trying to filter, return true. So we're keeping that item
+			}; //all in all, returns us new array with the appropriate item filtered out
 
-			}
+		case CartActionTypes.REMOVE_ITEM:
+			return {
+				...state,
+				cartItems: removeItemFromCart(state.cartItems, action.payload)
+			};
 
 			default:
 				return state;
